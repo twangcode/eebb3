@@ -1,0 +1,36 @@
+import pandas as pd
+import time
+
+
+filename = 'output/symbol_list.data'
+
+# Read the symbol_list.data file into a dictionary for ADR factor look up
+def generate_ratio_dict(data_file='output/symbol_list.data'):
+	df = pd.read_csv(data_file, header=None, sep=' ', names=['product', 'factor'], index_col=['product'])
+	ratio_dict = df.to_dict()
+	return ratio_dict['factor']
+
+# Look up a product in the ADR factor dictionary
+def look_up(prod, ratio_dict):
+	if prod in ratio_dict:
+		return float(ratio_dict[prod])
+	else:
+		return 'nan'
+
+def look_up_file(prod):
+	df = pd.read_csv('output/symbol_list.data', header=None, sep=' ', names=['product', 'factor'], index_col=['product'])
+	return df[prod]
+
+def main():
+	ratio_dict = generate_ratio_dict():
+	start_time = time.time()
+	for symbol in ['GBL', 'ZN', 'R', 'TS', 'CGB', 'OAT', 'A6', 'B6', 'C6', 'E6', 'S6']:
+		print look_up(symbol, ratio_dict)
+	runtime = time.time() - start_time
+	print "\nTotal runtime is: {:3f} seconds\n".format(runtime)
+	
+if __name__ == "__main__":
+	main()
+	
+
+	

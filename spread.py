@@ -1,16 +1,14 @@
-"""Parse historical data into a spread object"""
+"""The spread object"""
 
 import pandas as pd 
 import numpy as np 
-from os import listdir
-from os.path import isfile, join
-from datetime import datetime
+from os.path import join
 import time
 
 FILEPATH = '/var/opt/lufgroup/apps/nova_lufcomp/novaStats_ma/data'
 OLDPATH = '/var/opt/lufgroup/apps/nova_lufcomp/novaStats_ma/data_full_20181117'
 
-# Parse 'S:BB3xxx.data' file
+# Parse 'S:BB3xxx.data' file, return an pandas.dataframe.
 def data_reader(filename):
 	df = pd.read_csv(filename, sep=' ', header=None, parse_dates=[[0,1]], \
 		usecols=[0, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29], index_col='0_1')
@@ -28,7 +26,7 @@ class spread():
 		old_data = data_reader(join(OLDPATH, filename))
 		new_data = data_reader(join(FILEPATH, filename))
 		self.data = pd.concat([old_data, new_data]).drop_duplicates().last('6M')
-	
+		
 	def print_name(self):
 		print self.name
 	def get_name(self):
@@ -44,7 +42,9 @@ class spread():
 			 return self.data
 
 	def EE_Sharpe_Ratio(self, entry, exit, slippage=10):
+		# Load Data
 		data = self.data
+		# Generate bollinger bands accoring to EMA and STDDEV:
 		data['UpperBand'] = data['2D_EMA'] + data['2D_STDDEV'] * entry
 		data['LowerBand'] = data['2D_EMA'] - data['2D_STDDEV'] * entry
 		data['LongExit'] = data['LowerBand'] + data['2D_STDDEV'] * entry * exit

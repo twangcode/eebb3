@@ -1,11 +1,8 @@
-"""Parse historical data into a spread object"""
-
 import pandas as pd 
 import numpy as np 
 from os import listdir
 from os.path import isfile, join
 from datetime import datetime
-import time
 
 FILEPATH = '/var/opt/lufgroup/apps/nova_lufcomp/novaStats_ma/data'
 OLDPATH = '/var/opt/lufgroup/apps/nova_lufcomp/novaStats_ma/data_full_20181117'
@@ -70,11 +67,8 @@ class spread():
 		return sharpeRatio, total_profit, num_trades
 
 def test_run():
-	start_time = time.time()
 	filename = 'S:BB3_TEN:GBL-ZN+XE6.data'
-	print spread(filename).EE_Sharpe_Ratio(2, .5, 15)
-	run_time = time.time() - start_time
-	print "\nTotal runtime is: {} seconds.\n".format(run_time)
+	spread(filename).print_data()
 
 if __name__ == '__main__':
 	test_run()
